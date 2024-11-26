@@ -50,6 +50,25 @@
   - Component tests for UI behavior
   - Mock Supabase auth calls in tests
 
+### 9. Testing React Components and Hooks
+- **React 18 Testing Compatibility**
+  - Update testing libraries to support React 18
+  - Remove deprecated methods like `waitForNextUpdate`
+  - Use modern testing patterns with `@testing-library/react`
+
+### 10. Dependency Management Challenges
+- **NPM Peer Dependency Issues**
+  - Complex projects can have conflicting package requirements
+  - Use `--legacy-peer-deps` to resolve version conflicts
+  - Regularly update and audit dependencies to minimize conflicts
+
+### 11. Authentication Hook Testing
+- **Mocking External Services**
+  - Mock Supabase authentication methods in tests
+  - Simulate different authentication scenarios
+  - Test error handling and routing logic
+  - Ensure comprehensive test coverage for authentication flows
+
 ## Next Steps and Improvements
 1. Implement multi-factor authentication
 2. Add role-based access control

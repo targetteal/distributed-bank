@@ -1,9 +1,13 @@
+import React from 'react';
 import { render, screen, waitFor, act } from '@testing-library/react';
-import { AccountDashboard } from '../AccountDashboard';
+import AccountDashboard from '../AccountDashboard';
 import { getPersonalAccount } from '@/lib/db/accounts';
+import { useUser } from '@supabase/auth-helpers-nextjs';
 
 // Mock the dependencies
-jest.mock('@/lib/db/accounts');
+jest.mock('@/lib/db/accounts', () => ({
+    getPersonalAccount: jest.fn()
+}));
 jest.mock('@supabase/auth-helpers-nextjs', () => ({
     useUser: jest.fn()
 }));

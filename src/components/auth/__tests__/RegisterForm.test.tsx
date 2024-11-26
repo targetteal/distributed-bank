@@ -1,8 +1,11 @@
 /**
  * @jest-environment jsdom
  */
+import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { RegisterForm } from '../RegisterForm';
+import { supabase } from '@/lib/supabase';
 
 jest.mock('@radix-ui/react-label', () => ({
   Label: ({ children, htmlFor }: { children: React.ReactNode; htmlFor: string }) => (

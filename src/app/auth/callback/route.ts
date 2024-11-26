@@ -9,9 +9,16 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const supabase = createRouteHandlerClient({ cookies });
-    await supabase.auth.exchangeCodeForSession(code);
+    
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    
+    if (error) {
+      return NextResponse.redirect(
+        new URL(`/login?error=${encodeURIComponent(error.message)}`, request.url)
+      );
+    }
   }
 
-  // URL to redirect to after sign in process completes
-  return NextResponse.redirect(new URL('/dashboard', requestUrl.origin));
+  // Redirect to the accounts page after successful authentication
+  return NextResponse.redirect(new URL('/accounts', request.url));
 }

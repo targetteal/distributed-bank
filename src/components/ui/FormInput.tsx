@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef } from 'react';
+import React, { forwardRef } from 'react';
 import { FieldError } from 'react-hook-form';
 
 interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -8,7 +8,7 @@ interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: FieldError;
 }
 
-export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
+const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
   ({ label, error, id, disabled, className = '', ...props }, ref) => {
     return (
       <div>
@@ -31,3 +31,5 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     );
   }
 );
+
+export default FormInput;

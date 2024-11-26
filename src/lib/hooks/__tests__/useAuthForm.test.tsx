@@ -1,7 +1,8 @@
-import { renderHook, act, waitFor } from '@testing-library/react';
-import { useAuthForm } from '../useAuthForm';
-import { supabase } from '@/lib/supabase';
+import React from 'react';
+import { renderHook, act } from '@testing-library/react-hooks';
 import { useRouter } from 'next/navigation';
+import useAuthForm from '../useAuthForm';
+import { supabase } from '@/lib/supabase';
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({
@@ -35,38 +36,48 @@ describe('useAuthForm', () => {
         };
 
         it('handles successful login', async () => {
-            (supabase.auth.signInWithPassword as jest.Mock).mockResolvedValue({ error: null });
+            // Arrange
+            (supabase.auth.signInWithPassword as jest.Mock).mockResolvedValue({ 
+                error: null,
+                data: { user: {} }
+            });
             
+            // Act
             const { result } = renderHook(() => useAuthForm('login'));
 
             await act(async () => {
-                await result.current.form.setValue('email', validLoginData.email);
-                await result.current.form.setValue('password', validLoginData.password);
+                result.current.form.setValue('email', validLoginData.email);
+                result.current.form.setValue('password', validLoginData.password);
                 await result.current.onSubmit();
             });
 
+            // Assert
             expect(supabase.auth.signInWithPassword).toHaveBeenCalledWith({
                 email: validLoginData.email,
                 password: validLoginData.password
             });
-            expect(mockRouter.push).toHaveBeenCalledWith('/dashboard');
-            expect(mockRouter.refresh).toHaveBeenCalled();
+            expect(mockRouter.push).toHaveBeenCalledWith('/accounts');
             expect(result.current.error).toBeNull();
         });
 
         it('handles login error', async () => {
-            const mockError = new Error('An error occurred');
-            (supabase.auth.signInWithPassword as jest.Mock).mockResolvedValue({ error: mockError });
+            // Arrange
+            const mockError = { message: 'Invalid credentials' };
+            (supabase.auth.signInWithPassword as jest.Mock).mockResolvedValue({ 
+                error: mockError 
+            });
             
+            // Act
             const { result } = renderHook(() => useAuthForm('login'));
 
             await act(async () => {
-                await result.current.form.setValue('email', validLoginData.email);
-                await result.current.form.setValue('password', validLoginData.password);
+                result.current.form.setValue('email', validLoginData.email);
+                result.current.form.setValue('password', validLoginData.password);
                 await result.current.onSubmit();
             });
 
-            expect(result.current.error).toBe('An error occurred');
+            // Assert
+            expect(result.current.error).toBe('Invalid credentials');
             expect(mockRouter.push).not.toHaveBeenCalled();
         });
     });
@@ -79,22 +90,50 @@ describe('useAuthForm', () => {
         };
 
         it('handles successful registration', async () => {
-            (supabase.auth.signUp as jest.Mock).mockResolvedValue({ error: null });
+            // Arrange
+            (supabase.auth.signUp as jest.Mock).mockResolvedValue({ 
+                error: null,
+                data: { user: {} }
+            });
             
+            // Act
             const { result } = renderHook(() => useAuthForm('register'));
 
             await act(async () => {
-                await result.current.form.setValue('email', validRegisterData.email);
-                await result.current.form.setValue('password', validRegisterData.password);
-                await result.current.form.setValue('confirmPassword', validRegisterData.confirmPassword);
+                result.current.form.setValue('email', validRegisterData.email);
+                result.current.form.setValue('password', validRegisterData.password);
+                result.current.form.setValue('confirmPassword', validRegisterData.confirmPassword);
                 await result.current.onSubmit();
             });
 
+            // Assert
             expect(supabase.auth.signUp).toHaveBeenCalledWith({
                 email: validRegisterData.email,
                 password: validRegisterData.password
             });
-            expect(mockRouter.push).toHaveBeenCalledWith('/dashboard');
+            expect(mockRouter.push).toHaveBeenCalledWith('/accounts');
+        });
+
+        it('handles registration error', async () => {
+            // Arrange
+            const mockError = { message: 'Registration failed' };
+            (supabase.auth.signUp as jest.Mock).mockResolvedValue({ 
+                error: mockError 
+            });
+            
+            // Act
+            const { result } = renderHook(() => useAuthForm('register'));
+
+            await act(async () => {
+                result.current.form.setValue('email', validRegisterData.email);
+                result.current.form.setValue('password', validRegisterData.password);
+                result.current.form.setValue('confirmPassword', validRegisterData.confirmPassword);
+                await result.current.onSubmit();
+            });
+
+            // Assert
+            expect(result.current.error).toBe('Registration failed');
+            expect(mockRouter.push).not.toHaveBeenCalled();
         });
     });
 });

@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getPersonalAccount } from '@/lib/db/accounts';
 import { PersonalAccount } from '@/lib/types/account';
 import { useUser } from '@supabase/auth-helpers-nextjs';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function AccountDashboard() {
+const AccountDashboard = () => {
     const [account, setAccount] = useState<PersonalAccount | null>(null);
     const [loading, setLoading] = useState(true);
     const user = useUser();
@@ -88,4 +88,6 @@ export function AccountDashboard() {
             </Card>
         </div>
     );
-}
+};
+
+export default AccountDashboard;

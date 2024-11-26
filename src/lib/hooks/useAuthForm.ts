@@ -13,9 +13,6 @@ export const authSchema = {
   register: z.object({
     email: z.string().email('Invalid email address'),
     password: z.string().min(8, 'Password must be at least 8 characters'),
-    // .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    // .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    // .regex(/[0-9]/, 'Password must contain at least one number'),
     confirmPassword: z.string(),
   }).refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -35,29 +32,35 @@ export function useAuthForm<T extends AuthType>(type: T) {
     resolver: zodResolver(authSchema[type]),
   });
 
-  const onSubmit = async (data: AuthFormData<T>) => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  const onSubmit = async (formData: AuthFormData<T>) => {
+    setIsLoading(true);
+    setError(null);
 
+    try {
+      let result;
       if (type === 'login') {
-        const { error: authError } = await supabase.auth.signInWithPassword({
-          email: data.email,
-          password: data.password,
+        result = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
         });
-        if (authError) throw authError;
-      } else if (type === 'register') {
-        const { error: authError } = await supabase.auth.signUp({
-          email: data.email,
-          password: data.password,
+      } else {
+        result = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
         });
-        if (authError) throw authError;
       }
 
-      router.push('/dashboard');
-      router.refresh();
+      if (result.error) {
+        setError(result.error.message);
+        setIsLoading(false);
+        return;
+      }
+
+      // Redirect to accounts page after successful authentication
+      router.push('/accounts');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error('Authentication error:', err);
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -70,3 +73,5 @@ export function useAuthForm<T extends AuthType>(type: T) {
     onSubmit: form.handleSubmit(onSubmit),
   };
 }
+
+export default useAuthForm;
