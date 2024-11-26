@@ -17,13 +17,13 @@ describe('RegisterForm', () => {
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /register/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /create account/i })).toBeInTheDocument();
   });
 
   it('shows validation errors for invalid inputs', async () => {
     render(<RegisterForm />);
     
-    const submitButton = screen.getByRole('button', { name: /register/i });
+    const submitButton = screen.getByRole('button', { name: /create account/i });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -38,7 +38,7 @@ describe('RegisterForm', () => {
     const passwordInput = screen.getByLabelText(/^password$/i);
     fireEvent.change(passwordInput, { target: { value: 'weak' } });
     
-    const submitButton = screen.getByRole('button', { name: /register/i });
+    const submitButton = screen.getByRole('button', { name: /create account/i });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -55,7 +55,7 @@ describe('RegisterForm', () => {
     fireEvent.change(passwordInput, { target: { value: 'ValidPass1' } });
     fireEvent.change(confirmPasswordInput, { target: { value: 'DifferentPass1' } });
     
-    const submitButton = screen.getByRole('button', { name: /register/i });
+    const submitButton = screen.getByRole('button', { name: /create account/i });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
