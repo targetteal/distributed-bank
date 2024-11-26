@@ -5,7 +5,6 @@ const path = require('path');
 dotenv.config({ path: path.resolve(__dirname, '.env.test') });
 
 module.exports = {
-  preset: 'ts-jest',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   moduleNameMapper: {
@@ -13,7 +12,7 @@ module.exports = {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
   },
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest'
+    '^.+\\.(t|j)sx?$': '@swc/jest'
   },
   transformIgnorePatterns: [
     'node_modules/(?!(@supabase|jose)/)'
